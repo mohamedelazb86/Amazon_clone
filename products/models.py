@@ -29,6 +29,27 @@ class Product(models.Model):
         self.slug=slugify(self.name)
         super(Product,self).save(*args,**kwargs)
 
+    # function for reviews
+    @property
+    def conut_review(self):
+        reviews=self.review_product.all().count()
+        return reviews
+    
+    # function for rate
+    @property
+    def avg_rate(self):
+        reviews=self.review_product.all()
+        total=0
+        if len(reviews)>0:
+            for item in reviews:
+                total +=item.rate
+            avg=total/len(reviews)
+        else:
+            avg=0
+
+        return avg
+
+
 class Product_Image(models.Model):
     product=models.ForeignKey(Product,related_name='image_product',on_delete=models.CASCADE)
     image=models.ImageField(upload_to='photos')
