@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     "taggit",
     'django_summernote',
      'rest_framework',
+     'django_filters',
 
     # my apps
     'products',
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 70
 }
