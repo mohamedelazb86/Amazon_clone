@@ -49,6 +49,23 @@ class BrandDetail(ListView):
         return context
     
     
+def mydebug(request):
+
+    # number
+    #data=Product.objects.all()
+    #data=Product.objects.filter(price=21.18)
+    #data=Product.objects.filter(price__gt=95)
+   # data=Product.objects.filter(price__gte=85)
+    #data=Product.objects.filter(price__lt=80)
+   # data=Product.objects.filter(price__lte=90)
+    data=Product.objects.filter(price__range=(80,100))
+
+    #   relations
+   # data=Product.objects.filter(brand__name='Kerri Cohen')
+    
+    return render(request,'products/debug.html',{'data':data})
+    
+    
     
 
     
