@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Product,Brand,Review,Product_Image
 from django.views.generic import ListView,DetailView
+from django.db.models import Count
 
 
 class ProductList(ListView):
@@ -21,6 +22,7 @@ class ProductDetail(DetailView):
 class BrandList(ListView):
     model=Brand
     paginate_by=30
+    queryset=Brand.objects.annotate(product_count=Count('product_brand'))
 
 # class BrandDetail(DetailView):
 #     model=Brand
@@ -33,6 +35,7 @@ class BrandList(ListView):
 class BrandDetail(ListView):
     model=Product
     template_name='products/brand_detail.html'
+    paginate_by=5
 
     def get_queryset(self):
         brand=Brand.objects.get(slug=self.kwargs['slug'])
@@ -42,7 +45,7 @@ class BrandDetail(ListView):
     
     def get_context_data(self, **kwargs) :
         context = super().get_context_data(**kwargs)
-        context["brands"] = Brand.objects.get(slug=self.kwargs['slug'])
+        context["brands"] = Brand.objects.filter(slug=self.kwargs['slug']).annotate(product_count=Count('product_brand'))[0]
         return context
     
     
