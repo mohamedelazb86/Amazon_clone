@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Product,Brand,Review,Product_Image
 from django.views.generic import ListView,DetailView
-from django.db.models import Count
+from django.db.models import Count,Q
+from products.models import Product,Review
 
 
 class ProductList(ListView):
@@ -51,19 +52,66 @@ class BrandDetail(ListView):
     
 def mydebug(request):
 
-    # number
+    # number ---------------------
     #data=Product.objects.all()
     #data=Product.objects.filter(price=21.18)
     #data=Product.objects.filter(price__gt=95)
    # data=Product.objects.filter(price__gte=85)
     #data=Product.objects.filter(price__lt=80)
    # data=Product.objects.filter(price__lte=90)
-    data=Product.objects.filter(price__range=(80,100))
+    #data=Product.objects.filter(price__range=(80,100))
 
-    #   relations
+    #   relations -----------------------
    # data=Product.objects.filter(brand__name='Kerri Cohen')
+    #data=Product.objects.filter(brand__slug='mary-kelley')
+    #data=Product.objects.filter(brand__id__gt=20)
+
+    # text-----------------------------
+    #data=Product.objects.filter(name__contains='Mary')
+    #data=Product.objects.filter(name__startswith='Brian')
+    #data=Product.objects.filter(name__endswith='Ramirez')
+
+    #data=Product.objects.filter(price__isnull=True)
+
+    #   data ----------------------
+    #data=Product.objects.filter(date__year=2022)
+    #data=Product.objects.filter(date__month=12)
+    #data=Product.objects.filter(date__days=23)
+
+    # complex
+    #data=Product.objects.filter(price=85,name='4555')
+
+    #data=Product.objects.filter(price=48.25).filter(slug='william-martinez')
+    # data=Product.objects.filter(
+    #     ~Q(price=21)&
+    #     Q(slug='william-martinez')
+    # )
+    # data=Product.objects.earliest('name')
+    # data=Product.objects.latest('name')
+    data=Product.objects.select_related('brand').all()
+    data=Product.objects.prefetch_related('brand').all()
+
+
+
+
+
     
     return render(request,'products/debug.html',{'data':data})
+def add_review(request,slug):
+    product=Product.objects.get(slug=slug)
+    review=request.POST['rate']
+    rate=request.POST['rating']
+    Review.objects.create(
+        user=request.user,
+        product=product,
+        rate=rate,
+        review=review
+
+    )
+    return redirect(f'/products/{product.slug}')
+    
+
+
     
     
     
