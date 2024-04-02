@@ -23,8 +23,7 @@ class Order(models.Model):
     total=models.FloatField(null=True,blank=True)
     total_with_copoun=models.FloatField(null=True,blank=True)
 
-    def __str__(self):
-        return str(self.user)
+    
 
 
 class OrderDetail(models.Model):
@@ -52,18 +51,23 @@ class Cart(models.Model):
     
     total_with_copoun=models.FloatField(null=True,blank=True)
 
-    def __str__(self):
-        return str(self.user)
+    @property
+    def cart_total(self):
+        total=0
+        for item in self.detail_cart.all():
+            total +=item.total
+        return total
+
+    
 
 
 class CartDetail(models.Model):
-    cart=models.ForeignKey(Order,related_name='detail_cart',on_delete=models.CASCADE)
+    cart=models.ForeignKey(Cart,related_name='detail_cart',on_delete=models.CASCADE)
     product=models.ForeignKey(Product,on_delete=models.SET_NULL,null=True,blank=True,related_name='cart_product')
     quantity=models.IntegerField(default=1)
     total=models.FloatField(null=True,blank=True)
 
-    def __str__(self):
-        return str(self.cart)
+   
     
 class Copoun(models.Model):
     code=models.CharField(max_length=50)
@@ -74,8 +78,7 @@ class Copoun(models.Model):
 
        
 
-    def __str__(self):
-        return self.code
+    
     
     def save(self,*args,**kwargs):
         week=datetime.timedelta(days=7)
