@@ -55,7 +55,7 @@ class Cart(models.Model):
     def cart_total(self):
         total=0
         for item in self.detail_cart.all():
-            total +=item.total
+            total += item.total
         return total
 
     
