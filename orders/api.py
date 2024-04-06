@@ -83,14 +83,49 @@ class CreatOrderApi(generics.GenericAPIView):
             product.quantity -=1
             product.save()
         cart.status='Completed'
-        cart.save()    
+        cart.save() 
+        return Response({'message':'ok done create order to this user'})   
 
 
         # send email
 
 
-class Create_update_delete_Cart():
-    pass
+class Create_update_delete_Cart(generics.GenericAPIView):
+    def get(self,request,*args,**kwargs):
+        # get all cart
+        user=User.objects.get(username=self.kwargs['username'])
+        cart=Cart.objects.get_or_create(user=user,status='Inprogress')
+        data=CartSerializers(cart).data
+        return Response({'cart':data})
+    
+
+    def post(self,request,*args,**kwargs):
+        user=User.objects.get(username=self.kwargs['username'])
+        product=Product.objects.get(id=request.data['prouct_id'])
+        quantity=round(request.data['product_quantity'],2)
+
+        cart=Cart.objects.get(user=user,status='Inprogress')
+        cart_detail,created=CartDetail.objects.get_or_create(cart=cart,product=product)
+
+        cart_detail.quantity=quantity
+        cart_detail.total=cart_detail.quantity * product.price
+
+        cart_detail.save()
+
+        return Response ({'message':'ok added product api'})
+
+
+
+
+    def delete(self,request,*args,**kwargs):
+        # delete from cart
+        user=User.objects.get(username=self.kwargs['username'])
+        # cart=Cart.objects.get(user=user,status='Inprogress')
+        # cart_detail=CartDetail.objects.filter(cart=cart)
+        product=CartDetail.objects.get(id=request.data['product_id'])
+        product.delete()
+        return Response({'message':'delete done'})
+
 
             
 
