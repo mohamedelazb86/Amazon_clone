@@ -46,6 +46,8 @@ INSTALLED_APPS = [
      'rest_framework',
      'django_filters',
       "debug_toolbar",
+      "django_bootstrap5",
+      'drf_yasg',
 
     # my apps
     'products',
@@ -165,6 +167,8 @@ AUTHENTICATION_BACKENDS=[
 ]
 
 #EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+LOGIN_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
